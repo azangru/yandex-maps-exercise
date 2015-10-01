@@ -3,3 +3,11 @@
   height: 400px;
   width: 400px;
 }
+
+.dndDraggingSource {
+    display: none;
+}
+
+.dndPlaceholder {
+  background-color: #ddd;
+}
