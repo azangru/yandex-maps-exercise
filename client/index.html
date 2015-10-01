@@ -6,18 +6,28 @@
     <link rel="stylesheet" href="css/style.css">
   </head>
   <body ng-app="myApp">
-    <main>
+    <main ng-controller="MainController as ctrl">
       <div class="route-builder">
-        <routes-list></routes-list>
-        <map></map>
+        <div class="routes-list">
+          <input type="text" id="suggest"/>
+          <ul dnd-list="locations">
+            <li
+              ng-repeat="location in locations"
+              dnd-draggable="item"
+              dnd-moved="locations.splice($index, 1)"
+              dnd-effect-allowed="move"
+            >
+              {{location.name}}
+            </li>
+          </ul>
+        </div>
+        <div id="map"></div>
       </div>
     </main>
-    <script src="lib/yandex-maps-2.1.js" type="text/javascript"></script>
+    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
     <script src="lib/angular/angular.min.js"></script>
     <script src="lib/angular-drag-and-drop-lists/angular-drag-and-drop-lists.min.js"></script>
     <script src="scripts/app.js"></script>
-    <script src="scripts/services/routes-factory.js"></script>
-    <script src="scripts/directives/routes-list.js"></script>
-    <script src="scripts/directives/map.js"></script>
+    <script src="scripts/controllers/main-controller.js"></script>
   </body>
 </html>
