@@ -3,7 +3,7 @@ angular.module('myApp')
     var self = this;
     var suggestView, map;
 
-    $scope.locations = [{name: 'пример'}];
+    $scope.locations = [];
 
     ymaps.ready(function(){
       init();
@@ -28,7 +28,6 @@ angular.module('myApp')
         location.coordinates = self.getPointCoordinates(res);
         $scope.locations.push(location);
         $scope.$evalAsync(); // runs a digest cycle on scope to make ng-repeat work
-        // map.geoObjects.add(res.geoObjects);
         self.addLocationToMap(location);
       });
     };
@@ -40,28 +39,89 @@ angular.module('myApp')
       pointCoordinates = pointCoordinates.map(function(string){
         return parseFloat(string);
       });
-      // for whatever crazy reason, the array of coordinates needs to be reversed
+      // for whatever crazy reason, coordinates come in the wrong order
       pointCoordinates = pointCoordinates.reverse();
       return pointCoordinates;
     };
 
     self.addLocationToMap = function(location) {
-      console.log(location.coordinates);
       var placemark = new ymaps.Placemark(location.coordinates, {
-        balloonContent: 'цвет <strong>воды пляжа бонди</strong>'
+        balloonContentHeader: 'Адрес',
+        balloonContentBody: location.name,
+        index: ($scope.locations.length - 1)
       }, {
         preset: 'islands#icon',
         iconColor: '#0095b6',
         draggable: true
       });
+      // add event listener that will respond to dragend event
+      // and will update coordinates of the location in $scope.locations array
+      placemark.events.add('dragend', function(e) {
+        var thisPlacemark = e.get('target');
+        var newCoordinates = thisPlacemark.geometry.getCoordinates();
+        var locationIndex = thisPlacemark.properties.get('index');
+        $scope.locations[locationIndex].coordinates = newCoordinates;
+        self.updatePolyline();
+      });
       map.geoObjects.add(placemark);
-      setTimeout(self.cleanMap, 2000);
+      // add a reference to the placemark in the location object
+      location.geoObject = placemark;
+      // (re-)draw the polyline connecting the locations
+      self.updatePolyline();
     };
 
-    self.cleanMap = function(){
+    self.updatePolyline = function() {
+      if ($scope.polyline) {
+        map.geoObjects.remove($scope.polyline);
+      }
+      var coordinates = self.getAllCoordinates();
+      if (coordinates.length > 1) {
+        self.drawPolyline(coordinates);
+      }
+    };
+
+    self.drawPolyline = function(coordinates) {
+      var polyline = new ymaps.Polyline(
+        coordinates,
+        {itemType: 'polyline'},
+        {strokeWidth: 4}
+      );
+      map.geoObjects.add(polyline);
+      // add the reference to the polyline to the $scope object
+      $scope.polyline = polyline;
+    };
+
+    self.cleanMap = function() {
       map.geoObjects.each(function(object){
         map.geoObjects.remove(object);
       })
+    };
+
+    self.updateMap = function() {
+      $scope.locations.forEach(function(location){
+        self.addLocationToMap(location);
+      })
+    };
+
+    self.removeLocation = function(index) {
+      var location = $scope.locations[index];
+      map.geoObjects.remove(location.geoObject);
+      $scope.locations.splice(index, 1);
+      self.updatePolyline();
+    };
+
+    self.sortableOptions = {
+      stop: function(e, ui){
+        self.updatePolyline();
+      }
+    };
+
+    self.getAllCoordinates = function() {
+      var coordinates = $scope.locations.reduce(function(previousValue, currentValue) {
+        previousValue.push(currentValue.coordinates);
+        return previousValue;
+      }, []);
+      return coordinates;
     };
 
   });

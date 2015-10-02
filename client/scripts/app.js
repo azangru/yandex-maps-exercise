@@ -1,1 +1,1 @@
-angular.module('myApp', ['dndLists']);
+angular.module('myApp', ['ui.sortable']);

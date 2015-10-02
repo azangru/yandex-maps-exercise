@@ -10,14 +10,16 @@
       <div class="route-builder">
         <div class="routes-list">
           <input type="text" id="suggest"/>
-          <ul dnd-list="locations">
-            <li
-              ng-repeat="location in locations"
-              dnd-draggable="item"
-              dnd-moved="locations.splice($index, 1)"
-              dnd-effect-allowed="move"
-            >
-              {{location.name}}
+          <ul ui-sortable="ctrl.sortableOptions" ng-model="locations">
+            <li ng-repeat="location in locations track by $index">
+              <span class="location">
+                <span class="location-name">
+                  {{($index + 1) + ')'}} {{location.name}}
+                </span>
+                <span class="location-delete" ng-click="ctrl.removeLocation($index)">
+                  ×
+                </span>
+              </span>
             </li>
           </ul>
         </div>
@@ -25,8 +27,10 @@
       </div>
     </main>
     <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+    <script src="lib/jquery/dist/jquery.min.js"></script>
+    <script src="lib/jquery-ui//jquery-ui.min.js"></script>
     <script src="lib/angular/angular.min.js"></script>
-    <script src="lib/angular-drag-and-drop-lists/angular-drag-and-drop-lists.min.js"></script>
+    <script src="lib/angular-ui-sortable/sortable.min.js"></script>
     <script src="scripts/app.js"></script>
     <script src="scripts/controllers/main-controller.js"></script>
   </body>
