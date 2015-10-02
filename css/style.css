@@ -1,5 +1,53 @@
+.routes-list {
+  display: inline-block;
+  width: 30%;
+  vertical-align: top;
+}
+
+.routes-list ul {
+  margin: 0;
+  padding: 0;
+}
+
+.routes-list li {
+  position: relative;
+  list-style-type: none;
+  line-height: 1.5em;
+}
+
+/*class added during dragging*/
+.ui-sortable-helper .location{
+  border: 1px dotted black;
+  padding: 0.22em;
+}
+
+.location-name {
+  cursor: move;
+}
+
+.location-delete{
+  display: inline-block;
+  position: absolute;
+  top: -0.1em;
+  font-size: 0.8em;
+  font-weight: bold;
+  margin-left: 1em;
+  color: red;
+  transition-duration: 0.2s;
+  transition-timing-function: linear;
+}
+
+.location-delete:hover {
+  font-size: 0.9em;
+  cursor: pointer;
+}
+
+.location-delete:hover{
+
+}
 
 #map{
+  display: inline-block;
   height: 400px;
   width: 400px;
 }
