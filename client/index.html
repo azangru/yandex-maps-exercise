@@ -9,21 +9,23 @@
     <main ng-controller="MainController as ctrl">
       <div class="route-builder">
         <div class="routes-list">
-          <input type="text" id="suggest"/>
+          <input type="text" id="suggest" placeholder="введите адрес" ng-model='location'/>
           <ul ui-sortable="ctrl.sortableOptions" ng-model="locations">
-            <li ng-repeat="location in locations track by $index">
-              <span class="location">
-                <span class="location-name">
+            <li ng-repeat="location in locations track by $index" ng-cloak>
+              <div class="location">
+                <div class="location-name">
                   {{($index + 1) + ')'}} {{location.name}}
-                </span>
-                <span class="location-delete" ng-click="ctrl.removeLocation($index)">
+                </div>
+                <div class="location-delete" ng-click="ctrl.removeLocation($index)">
                   ×
-                </span>
-              </span>
+                </div>
+              </div>
             </li>
           </ul>
         </div>
-        <div id="map"></div>
+        <div class="map-container">
+          <div id="map"></div>
+        </div>
       </div>
     </main>
     <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
