@@ -1,7 +1,6 @@
 angular.module('myApp')
   .controller('MainController', function($scope){
     var self = this;
-    var suggestView, map;
 
     $scope.locations = [];
 
@@ -11,15 +10,18 @@ angular.module('myApp')
 
     var init = function(){
       // add address hints to the input field
-      suggestView = new ymaps.SuggestView('suggest');
+      var suggestView = new ymaps.SuggestView('suggest');
       suggestView.events.add('select', function (event) {
         self.processItem(event.get('item'));
+        $scope.location = ''; // clean the input field after adding the location
       });
+
       // add a map
-      map = new ymaps.Map('map', {
-        center: [55.74954, 37.621587],
+      self.map = new ymaps.Map('map', {
+        center: [55.74954, 37.621587], // default center: Moscow
         zoom: 10
       });
+
     };
 
     self.processItem = function(item){
@@ -63,7 +65,10 @@ angular.module('myApp')
         $scope.locations[locationIndex].coordinates = newCoordinates;
         self.updatePolyline();
       });
-      map.geoObjects.add(placemark);
+      // add the placemark to the map
+      self.map.geoObjects.add(placemark);
+      // center the map to that placemark
+      self.map.setCenter(location.coordinates, undefined, {duration: 300});
       // add a reference to the placemark in the location object
       location.geoObject = placemark;
       // (re-)draw the polyline connecting the locations
@@ -72,7 +77,7 @@ angular.module('myApp')
 
     self.updatePolyline = function() {
       if ($scope.polyline) {
-        map.geoObjects.remove($scope.polyline);
+        self.map.geoObjects.remove($scope.polyline);
       }
       var coordinates = self.getAllCoordinates();
       if (coordinates.length > 1) {
@@ -86,14 +91,14 @@ angular.module('myApp')
         {itemType: 'polyline'},
         {strokeWidth: 4}
       );
-      map.geoObjects.add(polyline);
+      self.map.geoObjects.add(polyline);
       // add the reference to the polyline to the $scope object
       $scope.polyline = polyline;
     };
 
     self.cleanMap = function() {
-      map.geoObjects.each(function(object){
-        map.geoObjects.remove(object);
+      self.map.geoObjects.each(function(object){
+        self.map.geoObjects.remove(object);
       })
     };
 
@@ -105,7 +110,7 @@ angular.module('myApp')
 
     self.removeLocation = function(index) {
       var location = $scope.locations[index];
-      map.geoObjects.remove(location.geoObject);
+      self.map.geoObjects.remove(location.geoObject);
       $scope.locations.splice(index, 1);
       self.updatePolyline();
     };

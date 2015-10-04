@@ -1,7 +1,23 @@
+*{
+  box-sizing: border-box;
+}
+
+.route-builder{
+  padding: 1.5em;
+  width: 1000px;
+  margin: auto;
+}
+
 .routes-list {
   display: inline-block;
-  width: 30%;
+  width: 35%;
   vertical-align: top;
+  padding-right: 3em;
+}
+
+.routes-list input {
+  margin-bottom: 1em;
+  width: 300px;
 }
 
 .routes-list ul {
@@ -21,12 +37,21 @@
   padding: 0.22em;
 }
 
+.location{
+  width: 100%;
+}
+
 .location-name {
+  display: inline-block;
+  width: 90%;
   cursor: move;
 }
 
 .location-delete{
   display: inline-block;
+  width: 10%;
+  text-align: right;
+  vertical-align: top;
   position: absolute;
   top: -0.1em;
   font-size: 0.8em;
@@ -42,20 +67,26 @@
   cursor: pointer;
 }
 
-.location-delete:hover{
-
-}
-
-#map{
-  display: inline-block;
-  height: 400px;
-  width: 400px;
-}
-
 .dndDraggingSource {
     display: none;
 }
 
 .dndPlaceholder {
   background-color: #ddd;
+}
+
+[ng\:cloak], [ng-cloak], .ng-cloak {
+  display: none !important;
+}
+
+
+.map-container {
+  display: inline-block;
+  width: 60%;
+}
+
+#map{
+  display: inline-block;
+  height: 600px;
+  width: 600px;
 }
